@@ -1,0 +1,12 @@
+package com.jelo.api.item.ability;
+
+public enum AbilityType {
+    LEFT_CLICK_AIR,
+    LEFT_CLICK_BLOCK,
+    SNEAK_LEFT_CLICK_AIR,
+    SNEAK_LEFT_CLICK_BLOCK,
+    RIGHT_CLICK_AIR,
+    RIGHT_CLICK_BLOCK,
+    SNEAK_RIGHT_CLICK_AIR,
+    SNEAK_RIGHT_CLICK_BLOCK
+}

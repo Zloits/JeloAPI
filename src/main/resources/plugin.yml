@@ -1,0 +1,6 @@
+name: JeloAPI
+version: '${version}'
+
+main: com.jelo.api.Plugin
+api-version: '1.21.11'
+load: STARTUP
