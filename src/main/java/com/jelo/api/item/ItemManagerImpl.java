@@ -81,6 +81,7 @@ public class ItemManagerImpl implements ItemManager {
         itemStack.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, itemName));
 
         customItem.registerAbilities();
+        customItem.registerActions();
 
         customItems.put(itemName, customItem);
         customItemItemStackMap.put(customItem, itemStack);
