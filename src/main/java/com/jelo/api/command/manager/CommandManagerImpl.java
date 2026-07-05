@@ -177,6 +177,19 @@ public class CommandManagerImpl implements CommandManager {
         }
     }
 
+    @Override
+    public <T> void registerArgument(
+            @NotNull Class<T> type,
+            @NotNull Function<String, Argument<?>> factory
+    ) {
+        argumentRegistry.put(type, factory);
+    }
+
+    @Override
+    public <T> void unregisterArgument(@NotNull Class<T> type) {
+        argumentRegistry.remove(type);
+    }
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     private Argument<?> createEnumArgument(
             String id,
@@ -184,7 +197,7 @@ public class CommandManagerImpl implements CommandManager {
     ) {
         return new EnumArgument(
                 id,
-                (Class<? extends Enum>) enumClass
+                enumClass
         );
     }
 }
