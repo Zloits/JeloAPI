@@ -3,9 +3,14 @@ package com.jelo.api.item;
 import com.jelo.api.item.ability.AbilityContext;
 import com.jelo.api.item.ability.AbilityType;
 import com.jelo.api.item.ability.ItemAbility;
+import com.jelo.api.item.action.ActionContext;
+import com.jelo.api.item.action.ActionType;
+import com.jelo.api.item.action.ItemAction;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,6 +27,11 @@ public abstract class CustomItem {
      */
     private final Map<AbilityType, Method> abilities = new HashMap<>();
 
+    /**
+     * Map of all the registered actions of the custom item.
+     */
+    private final Map<ActionType, Method> actions = new HashMap<>();
+
     public CustomItem() {
     }
 
@@ -32,6 +42,15 @@ public abstract class CustomItem {
      */
     public final Map<AbilityType, Method> getAbilities() {
         return Map.copyOf(abilities);
+    }
+
+    /**
+     * Get all the registered actions of the custom item.
+     *
+     * @return Map of the registered actions of the custom item
+     */
+    public Map<ActionType, Method> getActions() {
+        return actions;
     }
 
     /**
@@ -66,6 +85,36 @@ public abstract class CustomItem {
             if (method.isAnnotationPresent(ItemAbility.class)) {
                 ItemAbility itemAbility = method.getDeclaredAnnotation(ItemAbility.class);
                 abilities.put(itemAbility.type(), method);
+            }
+        }
+    }
+
+    public final void executeAction(@NotNull ActionType type, @NotNull Player player, @NotNull ItemStack item, @Nullable Block block) {
+        Method method = actions.get(type);
+        if (method == null) return;
+
+        ActionContext context = new ActionContext(
+                player,
+                item,
+                block
+        );
+
+        try {
+            method.setAccessible(true);
+            method.invoke(this, context);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Registering all the actions.
+     */
+    public final void registerActions() {
+        for (Method method : getClass().getMethods()) {
+            if (method.isAnnotationPresent(ItemAction.class)) {
+                ItemAction itemAction = method.getDeclaredAnnotation(ItemAction.class);
+                actions.put(itemAction.type(), method);
             }
         }
     }
