@@ -106,7 +106,7 @@ public class ItemManagerImpl implements ItemManager {
     public void unregisterItems() {
         jeloAPI.getLogger().info("Unregistering all custom items...");
 
-        for (CustomItem customItem : customItems.values()) {
+        for (CustomItem customItem : new ArrayList<>(customItems.values())) {
             unregisterItem(customItem);
         }
     }

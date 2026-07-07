@@ -1,5 +1,6 @@
 package com.jelo.api.command.argument;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -12,7 +13,7 @@ public class PlayerArgument extends Argument<Player> {
 
     @Override
     public List<String> suggest(CommandSender sender, String currentInput) {
-        return org.bukkit.Bukkit.getOnlinePlayers().stream().map(org.bukkit.entity.Player::getName).toList();
+        return Bukkit.getOnlinePlayers().stream().map(org.bukkit.entity.Player::getName).toList();
     }
 
     @Override
