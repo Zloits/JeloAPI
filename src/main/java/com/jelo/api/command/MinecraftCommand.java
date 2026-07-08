@@ -27,7 +27,10 @@ public class MinecraftCommand extends Command {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String @NotNull [] args) {
         // 1. Root master permission guard check
-        if (!command.getPermission().isBlank() && !sender.hasPermission(command.getPermission())) {
+        if (command.getPermission() != null &&
+                !command.getPermission().isBlank() &&
+                !sender.hasPermission(command.getPermission())
+        ) {
             sender.sendMessage(CommandMessagePreset.NO_PERMISSION);
             return true;
         }

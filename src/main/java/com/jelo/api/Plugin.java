@@ -1,10 +1,13 @@
 package com.jelo.api;
 
 import com.jelo.api.command.defaults.MainCommand;
+import com.jelo.api.command.defaults.tests.MenuTestOneCommand;
+import com.jelo.api.command.defaults.tests.MenuTestTwoCommand;
 import com.jelo.api.item.ability.AbilityListener;
 import com.jelo.api.item.action.ActionListener;
 import com.jelo.api.item.commands.ItemManagerCommand;
 import com.jelo.api.item.defaults.SimpleItem;
+import com.jelo.api.menu.listener.MenuListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Plugin extends JavaPlugin {
@@ -13,6 +16,8 @@ public final class Plugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+
         this.jeloAPI = new JeloAPIImpl(this);
 
         APIProvider.set(jeloAPI);
@@ -32,6 +37,8 @@ public final class Plugin extends JavaPlugin {
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new AbilityListener(jeloAPI), this);
         getServer().getPluginManager().registerEvents(new ActionListener(jeloAPI), this);
+
+        getServer().getPluginManager().registerEvents(new MenuListener(), this);
     }
 
     private void setupItems() {
@@ -46,5 +53,11 @@ public final class Plugin extends JavaPlugin {
 
         jeloAPI.getCommandManager().registerSubCommand(mainCommand, itemManagerCommand);
         jeloAPI.getCommandManager().registerCommand(this, mainCommand);
+
+        // Registering test commands
+        if (getConfig().getBoolean("test-commands")) {
+            jeloAPI.getCommandManager().registerCommand(this, new MenuTestOneCommand());
+            jeloAPI.getCommandManager().registerCommand(this, new MenuTestTwoCommand());
+        }
     }
 }
