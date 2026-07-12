@@ -151,6 +151,23 @@ public class Menu {
     }
 
     /**
+     * Checks if menu is using header.
+     *
+     * @return {@code true} if using header
+     */
+    public boolean isUseHeader() {
+        return !header.getContents().isEmpty();
+    }
+
+    public boolean isUseFooter() {
+        return !header.getContents().isEmpty();
+    }
+
+    public boolean isUseLeftBar() {
+        return !header.getContents().isEmpty();
+    }
+
+    /**
      * Gets the border material.
      *
      * @return Border material

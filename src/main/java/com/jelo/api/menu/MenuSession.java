@@ -152,8 +152,13 @@ public final class MenuSession {
         int y = position.y();
 
         if (!menu.isUseBorder()) {
-            x--;
-            y--;
+            if (!menu.isUseHeader()) {
+                y--;
+            }
+
+            if (!menu.isUseLeftBar()) {
+                x--;
+            }
         }
 
         return inventorySlot(x, y);
