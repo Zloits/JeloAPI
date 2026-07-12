@@ -10,37 +10,70 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 
 public class MenuListener implements Listener {
 
     @EventHandler
-    public void onTakeItem(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getView().getTopInventory().getHolder() instanceof MenuHolder holder)) {
             return;
         }
 
-        if (event.getClickedInventory() != event.getView().getTopInventory()) return;
-
         MenuSession session = holder.getSession();
         Menu menu = session.getMenu();
 
-        MenuContent content = session.getContent(event.getRawSlot()).orElse(null);
+        switch (event.getAction()) {
+            case COLLECT_TO_CURSOR -> {
+                event.setCancelled(!menu.isTakeable());
+                return;
+            }
 
-        boolean takeable = menu.isTakeable();
-        if (content != null && content.isTakeable() != null) {
-            takeable = content.isTakeable();
+            case MOVE_TO_OTHER_INVENTORY -> {
+                event.setCancelled(!menu.isTakeable());
+            }
+            case HOTBAR_SWAP -> {
+                event.setCancelled(true);
+            }
+
+            default -> {}
         }
 
-        event.setCancelled(!takeable);
+        if (event.getClickedInventory() != event.getView().getTopInventory()) {
+            return;
+        }
+
+        MenuContent content = session.getContent(event.getRawSlot()).orElse(null);
+
+        boolean takeable = content != null && content.isTakeable() != null
+                ? content.isTakeable()
+                : menu.isTakeable();
+
+        if (!takeable) {
+            event.setCancelled(true);
+        }
 
         if (content != null && content.getClickHandler() != null) {
-            content.getClickHandler()
-                    .handle(new MenuClickContext(
-                            (Player) event.getWhoClicked(),
-                            session,
-                            content,
-                            event
-                    ));
+            content.getClickHandler().handle(new MenuClickContext(
+                    (Player) event.getWhoClicked(),
+                    session,
+                    content,
+                    event
+            ));
+        }
+    }
+
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (!(event.getView().getTopInventory().getHolder() instanceof MenuHolder)) {
+            return;
+        }
+
+        for (int slot : event.getRawSlots()) {
+            if (slot < event.getView().getTopInventory().getSize()) {
+                event.setCancelled(true);
+                return;
+            }
         }
     }
 

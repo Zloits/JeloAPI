@@ -31,6 +31,10 @@ public class MenuTestFourCommand extends JeloCommand {
                 .addContent(MenuContent.of(new ItemStack(Material.BARRIER), 4, 1))
                 .build()
 
+                .leftBar()
+                .addContent(MenuContent.of(new ItemStack(Material.NAME_TAG), 1, 1))
+                .build()
+
                 .build();
 
         setDefaultExecutor(((commandSender, context) -> {
